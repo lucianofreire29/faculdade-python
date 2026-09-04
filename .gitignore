@@ -1,0 +1,26 @@
+# Ambientes virtuais
+.venv/
+venv/
+env/
+
+# Cache do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Variáveis de ambiente e dados sensíveis
+.env
+.env.*
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Editores e sistema operacional
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Arquivos temporários
+*.log
+*.tmp
