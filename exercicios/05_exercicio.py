@@ -17,8 +17,8 @@ def desc():
         desconto = 0
         vdesconto = (desconto/100)*vtotal
         vfinal = vtotal - vdesconto
-    return desconto , vfinal
+    return vdesconto , vfinal
 
-desconto, vfinal = desc()
+vdesconto, vfinal = desc()
 
-print(f"seu desconto é: {desconto}% \nvalor final a pagar: {vfinal:.1f}")
+print(f"seu desconto é: R${vdesconto} \nvalor final a pagar:R${vfinal:.1f}")
