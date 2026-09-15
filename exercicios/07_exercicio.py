@@ -5,12 +5,12 @@ meta_total = float(input("digite a meta da loja: "))
 
 def bater():
     if vendas_vend >=meta_ind and vendas_loja >= meta_total:
-        bonus = 20
-        bonus_des = (bonus/100)*vendas_vend
+        bonus = 0.2
+        bonus_des = (bonus)*vendas_vend
         
     else:
         bonus = 0
-        bonus_des=(bonus/100)*vendas_vend
+        bonus_des=(bonus)*vendas_vend
     return bonus_des
 
 bonus_des = bater()
