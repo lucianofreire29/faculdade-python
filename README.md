@@ -51,6 +51,13 @@ faculdade-python/
 
 ## Como executar
 
+### Revisão AV1 - Dashboard Analítico em Python
+
+As sete questões resolvidas, com enunciados e comentários, estão em
+`exercicios/revisao_dashboard_q1.py` até `exercicios/revisao_dashboard_q7.py`.
+Consulte o [guia de revisão para a prova](exercicios/revisao_dashboard.md)
+para ver os conceitos, os resultados esperados e perguntas de treino.
+
 1. Clone o repositório:
 
 ```bash
