@@ -1,10 +1,10 @@
-cardapio = {100: ("cachorroQuente", 15.00), 101: ("bauruSimples", 10.00), 102: ("bauruComOvo", 10.00), 103: ("hamburguer", 15.00), 104: ("cheeseburguer", 17.00), 105: ("refrigerante", 7.00)}
+cardapio = {100: ("cachorroQuente", 15.00), 101:("bauruSimples", 10.00), 102:("bauruComOvo", 10.00), 103:("hamburguer", 15.00), 104:("cheeseburguer", 17.00), 105:("refrigerante", 7.00)}
 
 
 total_pedido = 0
 
 print("Bem-vindo ao cardápio do nosso restaurante!")
-print("Aqui está o nosso cardápio:")
+print("-------- Cardápio -------- ")
 for codigo, (nome, preco) in cardapio.items():
     print(f"Código: {codigo} - {nome} - R${preco:.2f}")
 
