@@ -10,7 +10,7 @@ h2 {
     text-align: center;
 }
 
-[type="button-1"] {
+#botao-cotacoes {
     background-color: #4CAF50;
     color: white;
     padding: 10px 20px;
