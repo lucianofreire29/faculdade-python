@@ -4,11 +4,13 @@ body {
     text-align: center;
     background-image: url("fundo.jpeg");
     background-size: cover;
+    color: #fdfdfd;
 }
 h2 {
     font-family: Arial, sans-serif;
     font-size: 16px;
     text-align: center;
+    color: #fdfdfd;
 }
 
 #botao-cotacoes {
@@ -18,4 +20,15 @@ h2 {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+}
+
+div#cotacoes {
+    margin-top: 20px;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    padding: 10px 10px;
+    width: 300px;
+    align-items: center;
+    margin: 0 auto;
+    margin-top: 20px;
 }
