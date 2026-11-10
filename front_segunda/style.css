@@ -2,7 +2,8 @@ body {
     font-family: Arial, sans-serif;
     font-size: 16px;
     text-align: center;
-
+    background-image: url("fundo.jpeg");
+    background-size: cover;
 }
 h2 {
     font-family: Arial, sans-serif;
