@@ -10,6 +10,41 @@
     <h1>Sistema de cadastro de usuário</h1>
     <h2>Meu App</h2>
 
-    <button type="button-1" onclick="window.location.href=''">Olá usuario</button>
+    <button type="button" id="botao-cotacoes">Olá usuario</button>
+    <div id="cotacoes" role="status" aria-live="polite"></div>
+
+    <script>
+        const botao = document.getElementById('botao-cotacoes');
+        const resultado = document.getElementById('cotacoes');
+        const formatoReal = new Intl.NumberFormat('pt-BR', {
+            style: 'currency', currency: 'BRL'
+        });
+
+        botao.addEventListener('click', async () => {
+            botao.disabled = true;
+            resultado.textContent = 'Consultando cotações...';
+
+            try {
+                const resposta = await fetch('/api/cotacoes', { cache: 'no-store' });
+                const dados = await resposta.json();
+                if (!resposta.ok) {
+                    throw new Error(dados.erro || 'Erro ao consultar as cotações.');
+                }
+
+                resultado.replaceChildren();
+                for (const cotacao of dados.cotacoes) {
+                    const linha = document.createElement('p');
+                    linha.textContent = `${cotacao.moeda}: ${formatoReal.format(Number(cotacao.valor))} — atualização da API: ${cotacao.atualizado_em}`;
+                    resultado.appendChild(linha);
+                }
+            } catch (erro) {
+                resultado.textContent = erro instanceof TypeError
+                    ? 'Não foi possível acessar o backend. Inicie o Python e abra http://127.0.0.1:5000.'
+                    : erro.message;
+            } finally {
+                botao.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>
