@@ -2,22 +2,17 @@ from pathlib import Path
 from decimal import Decimal, InvalidOperation
 
 import requests
-from flask import Flask, jsonify, render_template, send_from_directory
+from flask import Flask, jsonify, render_template
 
 
 PASTA = Path(__file__).resolve().parent
-app = Flask(__name__, template_folder=str(PASTA), static_folder=None)
+app = Flask(__name__, template_folder=str(PASTA), static_folder=str(PASTA / "static"))
 API_URL = "https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL,BTC-BRL"
 
 
 @app.get("/")
 def inicio():
     return render_template("index.html")
-
-
-@app.get("/style.css")
-def estilos():
-    return send_from_directory(PASTA, "style.css")
 
 
 @app.get("/api/cotacoes")

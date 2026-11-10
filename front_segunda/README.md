@@ -1,6 +1,6 @@
 # Meu App — cotações
 
-O botão “Olá usuario” consulta o backend Python, que faz uma requisição à AwesomeAPI para obter as cotações de compra (`bid`) de dólar, euro e bitcoin em reais. Cada resultado mostra a data de atualização informada pela API.
+O botão “Consultar Cotações” consulta o backend Python, que faz uma requisição à AwesomeAPI para obter as cotações de compra (`bid`) de dólar, euro e bitcoin em reais. Cada resultado mostra a data de atualização informada pela API.
 
 ## Executar
 
@@ -22,3 +22,7 @@ O servidor usa apenas o endereço local e pode ser encerrado com Ctrl+C. Não h�
 - Documentação: https://docs.awesomeapi.com.br/api-de-moedas
 
 A consulta precisa de internet e está sujeita aos limites e ao cache do provedor. Falhas de conexão, demora e respostas inválidas aparecem como mensagem na página. O erro `getaddrinfo failed` indica que a máquina não conseguiu resolver o endereço da API; verifique a conexão/DNS da rede.
+
+## Arquivos estáticos
+
+O CSS e a imagem de fundo ficam em `static/style.css` e `static/fundo.jpeg`. O Flask serve essa pasta automaticamente em `/static/`, sem uma rota para cada arquivo. No HTML, `url_for('static', filename='style.css')` gera o endereço do CSS. Dentro do CSS, `url("fundo.jpeg")` busca a imagem na mesma pasta.
