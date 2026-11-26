@@ -1,9 +1,9 @@
-# AV2 — Arquitetura de Computadores: guia completo para Debian
+# AV2 — Arquitetura de Computadores: guia completo para Ubuntu Server
 
 **Aluno:** Luciano Alves Freire Neto  
 **Professor:** Tibério Bezerra Soares  
 **Base:** arquivo `AV2-Arquitetura de Computadores_Noite.docx.pdf`, com 3 páginas.  
-**Guia preparado em:** 25/11/2026.
+**Guia atualizado em:** 26/11/2026.
 
 Este material explica como montar a máquina virtual, instalar o sistema, configurar o acesso remoto, criar os scripts e instalar dois serviços. Os comandos são para você executar no seu laboratório e conferir os resultados. Criar este guia no GitHub não cria nem configura a VM do seu computador.
 
@@ -17,7 +17,7 @@ Este material explica como montar a máquina virtual, instalar o sistema, config
 | 2 | OpenSSH ativo e automático; dois scripts executáveis na home do usuário | 3 pontos |
 | 3 | Dois serviços funcionando, iniciando com o sistema e arquivo de evidência | 2 pontos |
 
-**Sistema definido para esta atividade: Debian GNU/Linux estável**, conforme confirmado por Luciano. Todo o roteiro, desde o instalador até os comandos de validação, foi organizado para Debian com `apt` e `systemd`.
+**Sistema definido para esta atividade: Ubuntu Server**, conforme a orientação atual de Luciano. Todo o roteiro usa o instalador do Ubuntu Server, seus repositórios, `apt` e `systemd`.
 
 Também há uma diferença na expressão “/scripts na home”. Dentro da home, o caminho correto é **`~/scripts`**, por exemplo `/home/luciano/scripts`. O caminho **`/scripts`** sozinho fica na raiz do Linux. Neste guia, todos os arquivos ficam em `~/scripts`, atendendo à indicação de usar a home.
 
@@ -48,12 +48,12 @@ Não digite os marcadores de blocos de código nem um eventual símbolo `$` do t
 ### O que separar
 
 1. VirtualBox instalado no computador hospedeiro, ou outro virtualizador autorizado pelo professor.
-2. ISO de instalação **Debian estável netinst**, arquitetura **amd64** para um PC Intel/AMD de 64 bits. Use o instalador Debian, e não uma imagem Live, para acompanhar as telas deste guia.
+2. ISO do **Ubuntu Server**, arquitetura **amd64** para PC Intel/AMD de 64 bits. A imagem de instalação pode conter `live-server` no nome; ela é própria para instalar o servidor. Escolha a edição Server para acompanhar este roteiro.
 3. Recursos físicos suficientes para reservar 4 GB de RAM e 4 CPUs para a VM sem deixar o hospedeiro sem recursos.
 4. Internet para instalar os pacotes.
 5. Uma senha para o usuário Linux e uma frase-senha para o disco criptografado.
 
-**Versão do Debian:** baixe a edição **stable** atual na [página oficial do Debian](https://www.debian.org/distrib/), na opção de instalação de PC de 64 bits (`amd64 netinst`). A imagem netinst precisa de internet para baixar pacotes durante a instalação. Os nomes das telas podem variar um pouco conforme a versão e o idioma.
+**Versão do Ubuntu Server:** use a versão estável mais recente da [página oficial](https://ubuntu.com/download/server), conforme o enunciado. Na consulta em 26/11/2026, a página apresenta **26.10** como versão mais recente e **26.04.1 LTS** como LTS mais recente. Se o professor tiver definido uma versão LTS para o laboratório, siga essa versão. Os nomes das telas podem variar um pouco.
 
 ## 3. Parte 1 — Criar a máquina virtual
 
@@ -71,8 +71,8 @@ Um caminho possível é `C:\Users\Aluno\Documents\Luciano Alves Freire Neto`. Us
 1. Abra o **VirtualBox** e clique em **Novo**.
 2. Em **Nome**, coloque **Luciano Alves Freire Neto**.
 3. Em **Pasta da máquina**, selecione a pasta que você criou dentro de Documentos.
-4. Selecione a ISO de instalação do Debian.
-5. Confira o tipo **Linux** e a versão **Debian (64-bit)**, ou opção equivalente.
+4. Selecione a ISO de instalação do Ubuntu Server.
+5. Confira o tipo **Linux** e a versão **Ubuntu (64-bit)**, ou opção equivalente.
 6. Marque **Pular instalação desassistida / Skip Unattended Installation**, se essa opção aparecer. Faremos a instalação manual para escolher a criptografia.
 7. Defina a memória como **4096 MB**, equivalente à configuração de 4 GB usada neste laboratório.
 8. Defina **4 CPUs/processadores virtuais**. Quatro é o mínimo pedido; mais é permitido se houver recursos físicos.
@@ -114,143 +114,123 @@ Confira nas configurações da VM:
 - RAM: 4096 MB.
 - CPUs: pelo menos 4.
 - Disco virtual: capacidade de 20 GB.
-- ISO: Debian estável, instalador netinst amd64.
+- ISO: Ubuntu Server, arquitetura amd64.
 
 **Evidência sugerida:** capture a tela com nome e recursos da VM e outra com a localização dos arquivos no Explorador.
 
-## 4. Instalar Debian com LVM e criptografia
+## 4. Instalar Ubuntu Server com LVM e criptografia
 
 ### 4.1. Iniciar e navegar no instalador
 
 1. Inicie a VM.
-2. No menu da ISO, escolha **Graphical install** ou **Install**. As duas opções instalam o mesmo Debian; a primeira apenas apresenta o instalador com interface gráfica.
-3. Escolha **Português do Brasil**, localização **Brasil** e o teclado brasileiro adequado ao seu computador.
-4. Aguarde o reconhecimento do hardware e da placa de rede.
+2. No menu da ISO, escolha **Try or Install Ubuntu Server**, ou opção equivalente.
+3. Selecione o idioma disponível que preferir.
+4. Se aparecer uma atualização do instalador, siga a opção disponível conforme a conexão do laboratório.
+5. Confira o teclado. Para teclado brasileiro, selecione o layout brasileiro adequado, normalmente ABNT2.
+6. Se aparecer a escolha do tipo de instalação, mantenha **Ubuntu Server** padrão.
 
-Usar **Graphical install** não obriga instalar uma área de trabalho gráfica no servidor. Essa escolha será feita na seleção de programas, mais adiante.
+O instalador usa telas de texto. Navegue com **setas** e **Tab**, marque opções com **Espaço** e confirme com **Enter**. Ubuntu Server não precisa instalar uma área de trabalho gráfica para esta atividade.
 
-Use as **setas** para navegar, **Tab** para trocar de campo, **Espaço** para marcar caixas e **Enter** para confirmar. Os nomes exatos variam conforme o idioma e a versão.
+### 4.2. Rede, proxy e espelho de pacotes
 
-### 4.2. Rede e nome da máquina
+1. Na configuração de rede, mantenha o endereço automático por **DHCP**.
+2. Confira se a interface recebeu um endereço IP.
+3. Na tela de proxy, deixe vazio se a instituição não forneceu um endereço.
+4. Mantenha o espelho de pacotes padrão se o teste de conexão funcionar.
+5. Se a rede falhar, confira **NAT** e **Cabo conectado** no VirtualBox antes de continuar.
 
-1. Na rede, mantenha a interface com endereço automático por DHCP.
-2. No nome da máquina/hostname, coloque **financeiro-lab**.
-3. No domínio, deixe vazio se o laboratório não informou um domínio.
-4. Se a rede automática falhar, confira NAT e **Cabo conectado** no VirtualBox antes de continuar.
+### 4.3. Configurar LVM e criptografia LUKS
 
-O nome completo da **VM no VirtualBox** é obrigatório. O hostname do Debian tem outra função e pode ser `financeiro-lab`, sem espaços.
+Esta etapa atende ao **ponto extra**. A criptografia deve ser configurada durante a instalação.
 
-### 4.3. Senha administrativa e criação do usuário
+1. Na tela **Guided storage configuration**, escolha **Use an entire disk / Usar disco inteiro**.
+2. Selecione o **disco virtual de 20 GB** criado para a atividade.
+3. Marque **Set up this disk as an LVM group**.
+4. Marque **Encrypt the LVM group with LUKS**, ou opção equivalente.
+5. Defina e confirme uma **frase-senha do disco** que você consiga digitar no layout escolhido.
+6. Avance para o resumo e confira o disco e os volumes propostos.
+7. Confirme as alterações **somente no disco virtual desta VM**.
 
-Quando o instalador pedir a senha de **root**, este guia recomenda **deixar os dois campos vazios** e continuar. Nesse modo, o instalador desabilita o login direto de root e permite ao primeiro usuário usar `sudo` após a instalação.
+Marcar somente LVM não ativa criptografia: confira também a opção **LUKS**.
 
-Se o professor exigir senha de root, defina-a e use a seção 5.1 para preparar o `sudo` do usuário depois. A senha de root não é a frase-senha do disco.
+**LVM** organiza os volumes lógicos; **LUKS** protege os dados em repouso. Na configuração padrão, partições necessárias ao boot, como EFI e `/boot`, podem ficar sem criptografia, enquanto o sistema e os dados ficam no volume criptografado.
 
-Crie o usuário comum:
+A partição raiz pode ter menos de 20 GB por causa das partições de boot, dos metadados e do espaço reservado no LVM. A exigência de 20 GB corresponde à capacidade do disco virtual; não é necessário alterar manualmente a raiz para fazê-la ocupar esse valor.
+
+Guarde a frase-senha para informar ao professor na conferência, como o enunciado solicita. Não a coloque no GitHub nem no arquivo de evidência dos serviços.
+
+**Evidência sugerida:** opções LVM/LUKS e resumo de armazenamento, sem revelar a frase-senha.
+
+### 4.4. Criar o perfil do usuário
+
+Na tela **Profile setup**, preencha:
 
 | Campo | Valor sugerido |
 | --- | --- |
-| Nome completo | Luciano Alves Freire Neto |
-| Nome de usuário | luciano |
-| Senha do usuário | Defina a sua e confirme |
+| Your name / Seu nome | Luciano Alves Freire Neto |
+| Your server's name / Nome do servidor | financeiro-lab |
+| Pick a username / Nome de usuário | luciano |
+| Choose a password / Senha | Defina a sua |
+| Confirm your password | Repita a senha |
 
-Use `luciano` para trabalhar no dia a dia. Nos comandos com `sudo`, a senha solicitada será a desse usuário.
+O nome completo da **VM no VirtualBox** é obrigatório. O hostname do Ubuntu tem outra função e pode ser `financeiro-lab`, sem espaços.
 
-Se aparecer seleção de fuso horário, escolha o correspondente a Fortaleza/Ceará, conforme as opções disponíveis.
+O usuário criado pelo instalador do Ubuntu Server normalmente já tem acesso administrativo com `sudo`. A instalação padrão não pede que você configure uma senha separada de root.
 
-### 4.4. Particionamento assistido com LVM criptografado
+A senha do usuário serve para login e `sudo`. A frase-senha LUKS libera o disco antes de o sistema iniciar.
 
-Esta etapa atende ao **ponto extra**. Faça durante a instalação; marcar somente LVM não ativa criptografia.
+### 4.5. Ubuntu Pro e OpenSSH
 
-1. Em **Particionar discos**, escolha **Assistido — usar disco inteiro e configurar LVM criptografado**, ou **Guided — use entire disk and set up encrypted LVM**.
-2. Selecione o **disco virtual de 20 GB** criado para esta atividade.
-3. Escolha o esquema **Todos os arquivos em uma partição**, adequado a este laboratório.
-4. Leia e confirme as alterações solicitadas para criar a estrutura LVM criptografada no disco virtual selecionado.
-5. Se aparecer a etapa de apagar/preparar os dados da área criptografada, aguarde a conclusão; isso pode levar alguns minutos.
-6. Defina e confirme uma **frase-senha de criptografia** que você consiga digitar no layout escolhido.
-7. Se o instalador pedir o tamanho do grupo de volumes a usar no particionamento assistido, aceite o máximo disponível para este disco.
-8. Confira o resumo: a raiz `/` e a swap, se criada, devem ficar nos volumes dentro da estrutura criptografada.
-9. Escolha **Finalizar o particionamento e escrever as mudanças no disco**, ou opção equivalente, e confirme.
+1. Se aparecer a oferta de **Ubuntu Pro**, avance sem adesão, salvo orientação do professor.
+2. Na tela **SSH configuration**, marque **Install OpenSSH server**.
+3. Se houver a opção **Allow password authentication over SSH**, habilite-a para testar o usuário criado.
+4. Não é necessário importar chave pública para seguir este caminho de login por senha.
+5. Avance para continuar.
 
-A ordem de algumas confirmações pode variar. A opção precisa dizer **LVM criptografado**; selecionar somente **LVM** não protege os dados com LUKS.
+### 4.6. Serviços opcionais e instalação
 
-**LVM** organiza os volumes lógicos. **LUKS** protege os dados armazenados por criptografia. Na instalação padrão, partições necessárias ao boot, como EFI e `/boot`, podem permanecer sem criptografia; o sistema e os dados ficam no volume criptografado.
+1. Na tela de **Featured server snaps**, se aparecer, deixe os serviços opcionais desmarcados.
+2. Continue e aguarde a instalação terminar.
+3. Instalaremos Nginx e PostgreSQL manualmente nas seções 10 e 11, com `apt`.
+4. Não selecione outro servidor web nessa etapa, para manter a porta 80 disponível ao Nginx.
 
-O tamanho da partição raiz pode ser menor que 20 GB, porque existem partições de boot, metadados e eventualmente espaço reservado no LVM. A exigência de 20 GB deve ser conferida na capacidade do disco virtual.
+### 4.7. Reiniciar e fazer o primeiro login
 
-Guarde a frase-senha para informar ao professor na conferência, como o enunciado solicita. Não a coloque neste repositório nem no arquivo de evidência dos serviços.
+1. Quando a instalação terminar, selecione **Reboot Now / Reiniciar agora**.
+2. Quando solicitado, remova a ISO da unidade óptica virtual e pressione Enter.
+3. No boot, digite a **frase-senha LUKS** para desbloquear o disco.
+4. Aguarde a tela de login do Ubuntu.
+5. Entre como `luciano` e use a **senha do usuário**.
 
-**Evidência sugerida:** opção de LVM criptografado e resumo do particionamento, sem revelar a frase-senha.
+Se o instalador abrir novamente, desligue a VM normalmente, remova a ISO em **Configurações → Armazenamento** e inicie pelo disco instalado.
 
-### 4.5. Instalar o sistema base e configurar os pacotes
-
-1. Aguarde a instalação do sistema base.
-2. Se perguntar sobre ler outras mídias de instalação, selecione **Não**, a menos que o professor tenha fornecido outras mídias.
-3. Escolha usar um espelho de rede para baixar pacotes.
-4. Selecione o país e um espelho disponível; `deb.debian.org` é uma opção quando apresentada.
-5. No proxy HTTP, deixe vazio se a instituição não forneceu um endereço.
-6. Se aparecer a pesquisa de utilização de pacotes, faça a escolha de sua preferência; ela não interfere nos requisitos da atividade.
-
-### 4.6. Seleção de programas: servidor sem área de trabalho
-
-Na tela **Seleção de software/programas**, ajuste as caixas:
-
-| Opção | Seleção neste guia |
-| --- | --- |
-| Ambiente de área de trabalho Debian | Desmarcar |
-| GNOME, Xfce, KDE e outros desktops | Desmarcar |
-| Servidor SSH | Marcar |
-| Utilitários padrão do sistema | Marcar |
-| Servidor web e demais tarefas opcionais | Desmarcar |
-
-Use **Espaço** para marcar/desmarcar no instalador em modo texto. O Nginx e o PostgreSQL serão instalados manualmente nas seções 10 e 11. Assim, a opção de servidor web do instalador não adicionará outro programa disputando a porta 80.
-
-### 4.7. GRUB, reinicialização e primeiro login
-
-1. Aguarde a instalação dos programas selecionados.
-2. Se perguntar sobre instalar o carregador **GRUB**, confirme e escolha o disco virtual inteiro, normalmente `/dev/sda`, e não uma partição como `/dev/sda1`. Em UEFI, parte dessa configuração pode ser automática.
-3. Conclua a instalação e remova a ISO da unidade óptica virtual quando solicitado.
-4. Reinicie a VM.
-5. No boot, digite a **frase-senha do LUKS** para liberar o disco.
-6. No login do Debian, digite o usuário `luciano` e a **senha do usuário**.
-
-Se o instalador abrir de novo, desligue a VM normalmente, remova a ISO em **Configurações → Armazenamento** e inicie pelo disco instalado.
-
-**Comportamento esperado:** depois do desbloqueio aparece o login em modo texto do Debian. A senha do disco e a senha do usuário são usadas em momentos diferentes.
+**Comportamento esperado:** depois do desbloqueio, aparece o login em modo texto do Ubuntu Server. A senha do disco e a senha do usuário são usadas em momentos diferentes.
 
 ## 5. Primeiros comandos e conferência da VM
 
-**Execute dentro do Debian da VM.** Ao digitar a senha de `sudo`, normalmente nada aparece na tela, nem asteriscos. Digite a senha do usuário e pressione Enter.
+**Execute dentro do Ubuntu Server da VM.** Ao digitar a senha de `sudo`, normalmente nada aparece na tela, nem asteriscos. Digite a senha do usuário e pressione Enter.
 
-### 5.1. Conferir ou preparar o sudo antes de instalar pacotes
+### 5.1. Conferir o acesso sudo
 
-Conectado como `luciano`, execute:
+Conectado como o usuário criado na instalação, execute:
 
 ```bash
+whoami
 id
 sudo -v
 ```
 
-Se a senha for aceita sem erro, siga para a seção 5.2. Se você deixou a senha de root vazia na instalação, esse é o resultado esperado para o primeiro usuário.
+Digite a **senha do usuário**. Se a validação terminar sem erro, siga para a seção 5.2. No Ubuntu Server padrão, o primeiro usuário criado no instalador normalmente já pertence ao grupo `sudo`.
 
-**Se aparecer `sudo: command not found` ou usuário fora do sudoers**, e você definiu uma senha de root nesta VM, use:
-
-```bash
-su -
-```
-
-Digite a **senha de root**. Agora, no terminal administrativo, execute **sem sudo**:
+Se outro usuário estiver conectado e aparecer que ele não está no sudoers, entre com a conta administrativa criada na instalação. **Somente nessa conta que já tem sudo**, você pode autorizar o usuário desejado:
 
 ```bash
-apt update
-apt install -y sudo
-usermod -aG sudo luciano
-exit
+sudo usermod -aG sudo luciano
 ```
 
-Substitua `luciano` se escolheu outro usuário. Encerre a sessão desse usuário com `exit` e faça login novamente no console. Se estiver usando SSH, desconecte e reconecte. Depois confira `id` e `sudo -v` novamente: o grupo `sudo` deve estar na lista e a validação deve funcionar.
+Substitua `luciano` pelo usuário que precisa de acesso. Depois encerre a sessão desse usuário e faça login novamente para carregar o grupo. Confira com `id` e `sudo -v`.
 
-Sem senha de root nem outro acesso administrativo autorizado, peça ao professor/administrador para preparar o usuário. Resolva esta etapa antes de usar os próximos comandos com `sudo`.
+Esse comando não funciona a partir de uma conta que já está sem permissão. Se você não tiver acesso a nenhuma conta administrativa, peça ao professor/administrador para preparar o usuário antes de continuar. Não use `su -` supondo uma senha de root: no Ubuntu padrão, essa conta fica bloqueada para login por senha.
 
 ### 5.2. Conferir sistema e recursos
 
@@ -267,14 +247,14 @@ lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS
 | --- | --- |
 | `whoami` | Usuário usado na instalação |
 | `pwd` | Diretório atual, normalmente `/home/luciano` após login |
-| `cat /etc/os-release` | Deve identificar Debian GNU/Linux e a versão instalada |
+| `cat /etc/os-release` | Deve identificar Ubuntu e a versão instalada |
 | `nproc` | Pelo menos 4 CPUs disponíveis |
 | `free -h` | RAM próxima do valor configurado; uma parte fica reservada ao sistema |
 | `lsblk ...` | Disco com capacidade configurada, partição `crypto_LUKS`, mapeamento `crypt` e volumes LVM |
 
 ### 5.3. Instalar as ferramentas usadas pelo guia
 
-Atualize a lista de pacotes e instale as ferramentas dos repositórios do Debian:
+Atualize a lista de pacotes e instale as ferramentas dos repositórios do Ubuntu:
 
 ```bash
 sudo apt update
@@ -304,7 +284,7 @@ O esperado é **`enabled`** e **`active`**, com o servidor disponível. Para con
 sudo ss -ltnp 'sport = :22'
 ```
 
-Deve haver um processo escutando na porta 22. No Debian deste roteiro, a unidade administrada é **`ssh.service`**, abreviada como `ssh` nos comandos. O teste de conexão da seção 6.4 é a confirmação final.
+Deve haver um processo escutando na porta 22. Os comandos acima administram **`ssh.service`**. Algumas versões do Ubuntu usam também **`ssh.socket`** para ativação sob demanda; nesse caso, confira `systemctl status ssh.socket --no-pager` e `systemctl is-enabled ssh.socket`. O teste de conexão da seção 6.4 confirma que o acesso está funcionando.
 
 ### 6.2. Conferir autenticação do usuário
 
@@ -613,11 +593,11 @@ sudo systemctl status postgresql --no-pager
 pg_lsclusters
 ```
 
-No Debian, `postgresql.service` pode aparecer como **`active (exited)`** porque é uma unidade que organiza os clusters. Isso, sozinho, não comprova que o banco está aceitando consultas.
+No Ubuntu, `postgresql.service` pode aparecer como **`active (exited)`** porque é uma unidade que organiza os clusters. Isso, sozinho, não comprova que o banco está aceitando consultas.
 
 Na saída de `pg_lsclusters`, confira:
 
-- A versão instalada pelos repositórios do Debian em uso.
+- A versão instalada pelos repositórios do Ubuntu em uso.
 - O cluster, normalmente chamado `main`.
 - A porta, normalmente `5432` numa instalação nova.
 - O estado **`online`**.
@@ -670,7 +650,7 @@ Execute o bloco abaixo inteiro na VM. A linha final `EOF` precisa ficar sozinha,
 cat > "$HOME/scripts/servicos_instalados.txt" <<'EOF'
 AV2 - Arquitetura de Computadores
 Aluno: Luciano Alves Freire Neto
-Sistema operacional: Debian GNU/Linux
+Sistema operacional: Ubuntu Server
 
 1. Programa: Nginx
 Categoria: Servidor Web
@@ -756,7 +736,7 @@ cat "$HOME/scripts/servicos_instalados.txt"
 - [ ] VM nomeada **Luciano Alves Freire Neto**.
 - [ ] Arquivos da VM dentro da pasta com nome completo em **Documentos** do hospedeiro.
 - [ ] **4 GB de RAM**, **pelo menos 4 CPUs** e **disco virtual de 20 GB**.
-- [ ] Debian GNU/Linux estável instalado e versão conferida.
+- [ ] Ubuntu Server instalado e versão conferida.
 - [ ] Usuário criado na instalação com acesso sudo funcionando.
 - [ ] Para o ponto extra: LVM com LUKS e pedido de senha no boot.
 - [ ] Frase-senha disponível para conferência do professor.
@@ -783,18 +763,18 @@ cat "$HOME/scripts/servicos_instalados.txt"
 
 O PDF não define quantidade obrigatória de prints nem exige relatório separado. As capturas sugeridas neste guia ajudam na organização e não substituem a VM funcionando.
 
-## 14. Conferir os repositórios do Debian se o apt falhar
+## 14. Conferir os repositórios do Ubuntu se o apt falhar
 
-Normalmente o instalador configura os repositórios automaticamente quando você escolhe um espelho de rede. Se `apt update` pedir o CD/DVD depois que a ISO foi removida, pode haver uma entrada `deb cdrom:` ainda habilitada.
+Normalmente o instalador configura os repositórios de rede automaticamente. Se `sudo apt update` já funciona, não é necessário editar esses arquivos.
 
-Primeiro confira a versão e os arquivos existentes:
+Primeiro confira a versão do Ubuntu e os arquivos existentes:
 
 ```bash
 cat /etc/os-release
-ls -l /etc/apt/sources.list /etc/apt/sources.list.d/
+ls -l /etc/apt/sources.list.d/
 ```
 
-O Debian pode usar `/etc/apt/sources.list`, arquivos `.list` ou arquivos `.sources` dentro de `/etc/apt/sources.list.d/`. A ausência de `sources.list` não significa, sozinha, que os repositórios estejam faltando.
+Ubuntu recente costuma usar **`/etc/apt/sources.list.d/ubuntu.sources`**. Instalações mais antigas também podem usar `/etc/apt/sources.list`. A ausência de `sources.list` não significa que os repositórios estejam faltando.
 
 Para localizar entradas de mídia e conferir os espelhos:
 
@@ -802,11 +782,17 @@ Para localizar entradas de mídia e conferir os espelhos:
 grep -R -n -E 'cdrom:|^deb |^URIs:|^Suites:' /etc/apt/sources.list /etc/apt/sources.list.d/ 2>/dev/null
 ```
 
-Se houver uma linha ativa `deb cdrom:` em um arquivo `.list`, abra **esse arquivo** com `sudo nano`, coloque `#` no início somente dessa linha, salve e rode `sudo apt update`. Se for um bloco de mídia em arquivo `.sources`, o formato é diferente: use `Enabled: no` no bloco correspondente.
+Se houver uma entrada ativa `deb cdrom:` em arquivo `.list`, e o apt estiver pedindo a mídia removida, abra **esse arquivo** com `sudo nano` e coloque `#` no início apenas dessa linha. No formato `.sources`, um bloco de mídia pode ser desativado com `Enabled: no` no bloco correspondente. Preserve os repositórios de rede e repita `sudo apt update`.
 
-Mantenha as entradas de rede da versão Debian instalada. Se não houver nenhuma entrada de rede, consulte o professor e o [manual Debian de configuração do apt](https://www.debian.org/releases/stable/amd64/ch06s03.en.html#di-setup-apt) para configurar o espelho da mesma versão identificada em `/etc/os-release`.
+Se houver erro de resolução de nomes, confira antes a rede:
 
-Esta conferência é para resolver falhas de pacotes; ela não é uma etapa obrigatória quando `sudo apt update` já funciona.
+```bash
+ip -br addr
+ip route
+getent hosts archive.ubuntu.com
+```
+
+As entradas de pacotes devem corresponder ao Ubuntu instalado, conforme `VERSION_CODENAME` em `/etc/os-release`. Se não houver espelho de rede configurado, consulte o professor e a [documentação de gerenciamento de pacotes do Ubuntu](https://ubuntu.com/server/docs/how-to/software/package-management/) antes de editar a configuração.
 
 ## 15. Problemas comuns e como resolver
 
@@ -818,8 +804,8 @@ Esta conferência é para resolver falhas de pacotes; ela não é uma etapa obri
 | `Permission denied` ao executar script | Rode `chmod u+x "$HOME/scripts/"*.sh` e confira se você é dono dos arquivos. |
 | Não consigo salvar os arquivos na minha pasta | Se você os criou com sudo, confira `ls -ld "$HOME/scripts"` e `ls -l "$HOME/scripts"`. Corrija apenas o dono dos arquivos/pasta desta atividade; evite alterar permissões gerais do sistema. |
 | `sudo: command not found` ou usuário não está no sudoers | Siga a seção 5.1 antes de tentar instalar pacotes; precisa haver acesso administrativo autorizado. |
-| `Temporary failure resolving...` no apt | Confira NAT, cabo conectado, endereço em `ip -br addr` e resolução com `getent hosts deb.debian.org`. Corrija a rede antes de repetir `sudo apt update`. |
-| O apt pede o CD/DVD ou `sources.list` não existe | Veja a seção 14; o Debian também pode usar arquivos `.sources` dentro de `/etc/apt/sources.list.d/`. |
+| `Temporary failure resolving...` no apt | Confira NAT, cabo conectado, endereço em `ip -br addr` e resolução com `getent hosts archive.ubuntu.com`. Corrija a rede antes de repetir `sudo apt update`. |
+| O apt pede o CD/DVD ou `sources.list` não existe | Veja a seção 14; o Ubuntu recente costuma usar `/etc/apt/sources.list.d/ubuntu.sources`. |
 | Script de coleta pede senha | É o sudo consultando os logs do sistema; use a senha do usuário Linux. |
 | Log tem menos de 50 entradas | Pode haver poucos registros na VM; confira `sudo journalctl --no-pager -n 50`. |
 | SSH dá `Connection refused` | Confira VM ligada/desbloqueada, porta NAT 2222 → 22, `systemctl status ssh` e listener na porta 22. |
@@ -850,12 +836,13 @@ df -h
 ## 16. Referências para consultar
 
 - Enunciado fornecido: `AV2-Arquitetura de Computadores_Noite.docx.pdf`, páginas 1 a 3.
-- [Debian: imagens oficiais de instalação](https://www.debian.org/distrib/).
-- [Debian: manual oficial do instalador](https://www.debian.org/releases/stable/amd64/ch06s03.pt.html).
-- [Debian: configuração dos pacotes e espelhos no instalador](https://www.debian.org/releases/stable/amd64/ch06s03.en.html#di-setup-apt).
-- [Debian: manual do OpenSSH e suas configurações](https://manpages.debian.org/trixie/openssh-server/sshd_config.5.en.html).
-- [Debian: manual do Nginx](https://manpages.debian.org/trixie/nginx/nginx.8.en.html).
-- [Debian: gerenciamento de clusters PostgreSQL](https://manpages.debian.org/trixie/postgresql-common/pg_ctlcluster.1.en.html).
-- [Debian: criação e inicialização automática de clusters PostgreSQL](https://manpages.debian.org/trixie/postgresql-common/pg_createcluster.1.en.html).
+- [Ubuntu Server: download e versões](https://ubuntu.com/download/server).
+- [Instalador Ubuntu: telas da instalação](https://canonical-subiquity.readthedocs-hosted.com/en/latest/tutorial/screen-by-screen.html).
+- [Instalador Ubuntu: configuração de armazenamento e LUKS](https://canonical-subiquity.readthedocs-hosted.com/en/latest/howto/configure-storage.html).
+- [Ubuntu Server: usuários e privilégios administrativos](https://ubuntu.com/server/docs/how-to/security/user-management/).
+- [Ubuntu Server: OpenSSH](https://ubuntu.com/server/docs/how-to/security/openssh-server/).
+- [Ubuntu Server: instalação de Nginx](https://ubuntu.com/server/docs/how-to/web-services/install-nginx/).
+- [Ubuntu Server: instalação e configuração do PostgreSQL](https://ubuntu.com/server/docs/how-to/databases/install-postgresql/).
+- [Ubuntu Server: gerenciamento de pacotes](https://ubuntu.com/server/docs/how-to/software/package-management/).
 
 Para consultar a documentação instalada na própria VM: `man journalctl`, `man df`, `man free`, `man uptime` e `man systemctl`. Pressione **q** para sair das páginas de manual.
