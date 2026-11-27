@@ -4,6 +4,9 @@ ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")
 
 
+
+
+
 class Aplicativo(ctk.CTk):
     def __init__(self):
         super().__init__()
@@ -38,7 +41,7 @@ class Aplicativo(ctk.CTk):
             self.barra_lateral,
             text="Meu App",
             font=ctk.CTkFont(size=24, weight="bold")
-        )
+        ) 
         self.titulo.pack(pady=(30, 5), padx=20)
 
         self.subtitulo = ctk.CTkLabel(
@@ -186,17 +189,20 @@ class Aplicativo(ctk.CTk):
 
     def salvar_perfil(self):
         nome = self.campo_nome.get()
+        nivel = self.radio_admin
 
         if self.nivel_usuario.get() == 2:
             nivel = "Admin"
         else:
             nivel = "Básico"
 
+
         receber_notificacoes = self.checkbox_notificacoes.get()
 
         print("Nome:", nome)
         print("Nível:", nivel)
         print("Receber notificações:", receber_notificacoes)
+
 
         self.titulo.configure(text=f"{nome} App")
         self.subtitulo.configure(text=nivel)
